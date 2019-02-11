@@ -1,0 +1,59 @@
+# Read asc file
+# Ignore/remove first 4 lines
+# Capture the remainder of the file in columns
+# The first and second columns will be the longest
+# Split the first and second columns based on the length of the third
+# Assign the values of the 3rd & 4th columns to the beacon no. as tuples
+# Split the parcels column and creat a dictinoary from each parcel string
+
+from tkinter.filedialog import askopenfilename
+
+col_data = []
+values = []
+filename = askopenfilename()
+
+f = open(filename, 'r')
+data = f.read()					#Stores the file as a string
+data_list = data.split("\n") 	#Splits the string to a list, each line is an element
+for i in range(len(data_list)):
+	line = data_list[i]				# Read the ith line of the data_list
+	linelist = line.split()			# Create a list by spliting the ith line
+	values.append(linelist)			# Append the linelist into the values list
+		
+
+header = [values[0],values[1], values[2], values[3]]
+del values[0:4]
+
+# print(header)
+# print('\n')
+# print(values)
+
+beacons = []
+easting = []
+northing = []
+parcel_string = []
+
+for i in range(len(values)):
+	if len(values[i]) == 7:							# This identifies beacons
+			beacons.append(values[i][1])			# Store beacon no.
+			easting.append(float(values[i][2]))		# Store beacon easting
+			northing.append(float(values[i][3]))	# Store beacon northing
+	elif len(values[i]) == 2:						# This identifies parcel_string lines
+		parcel_string.append(values[i])				# This appends parcel_string lines to parcel_string list
+
+
+coordinates = dict(zip(beacons,zip(easting, northing)))  # Create a dictionary with beacon as the key
+
+# print(coordinates)
+print(parcel_string)
+print('\n')
+
+parcels_list = [val for sublist in parcel_string for val in sublist]
+
+
+# Remove '-' from parcels_list
+for elem in parcels_list:
+	if elem == '-':
+		parcels_list.remove(elem)
+		
+print(parcels_list)
